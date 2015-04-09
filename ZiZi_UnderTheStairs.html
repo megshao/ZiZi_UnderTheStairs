@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>姿姿下樓梯</title>
+            <script type="text/javascript" src="object.js"></script>
+            <script type="text/javascript" src="people.js"></script>
+	</head>
+
+	<body>
+            <div align="center">
+		    <canvas id="myCanvas2" width="600" height="600" style="border:2px solid black"> </canvas>
+                  <button onclick="stop();">stop</button>
+	     </div>
+           <div>
+                  <p id="record">0 F</p>
+                  <p id="debug"></p>
+           </div>
+		<script>
+		var c2=document.getElementById("myCanvas2");
+		var cxt2=c2.getContext("2d");
+            cxt2.lineWidth="10";
+
+            var imgMain=new Image();
+            imgMain.src="http://i145.photobucket.com/albums/r212/stardustandsunshine/jill_01redgreenblue.png";
+
+
+            var step = 1;
+
+            var objArray = new Array();
+
+            var temp = new object();
+            temp.setX(100);
+            objArray.push(temp);
+            
+            var user = new people();
+            user.setX(300);
+
+            var imgIndex = 0;//0:中 1:右1 2:右2 3:左1 4:左2
+            var rightIndex = 0;
+            var leftIndex = 0;
+
+            document.captureEvents(Event.KEYDOWN);
+            document.onkeydown=function(event){//按鍵控制
+                  if(event.which==37){
+                  //key code 37為<-
+                        user.moveLeft();
+                        if(rightIndex % 2 ==0){
+                              imgIndex = 3;
+                        }
+                        else{
+                              imgIndex = 4;
+                        }
+                        rightIndex++;
+                        //alert("你按下了<-");
+                        if(user.step != null){
+                              if(user.getX()  < user.step.getX()){
+                                    user.fallFlag = false;
+                                    user.resetStep();
+                              }
+                        }
+                  }
+                  else if(event.which==39){
+                  //key code 39為->
+                        user.moveRight();
+                        if(leftIndex % 2 == 0){
+                              imgIndex = 1;
+                        }
+                        else{
+                              imgIndex = 2;
+                        }
+                        leftIndex++;
+                        //alert("你按下了->");
+                        if(user.step != null){
+                              if(user.getX()  > user.step.getX() + 100){
+                                    user.fallFlag = false;
+                                    user.resetStep();
+                              }
+                        }
+                  }
+            }
+            document.captureEvents(Event.KEYUP);
+            document.onkeyup = function(event){
+                  imgIndex = 0;
+            }
+
+            var speed = 30;
+
+	      var move = window.setInterval(down,speed);
+            
+            function down(){
+                  cxt2.clearRect(0,0,600,600);
+                  for(var i = 0 ; i < objArray.length ; i++){
+                        cxt2.fillRect(objArray[i].getX(),objArray[i].getY(),100,20);//畫階梯
+                        if(!user.fallFlag){
+                              if((user.getX() + 25 >= objArray[i].getX())&&(user.getX()  <= objArray[i].getX() + 100) &&((user.getY()+40 >= objArray[i].getY()-1) &&(user.getY()+40 <= objArray[i].getY()+1))){
+                                    user.fallFlag = true;
+                                    user.setStep(objArray[i]);
+                                    //alert("QQ"+user.fallFlag);
+                              }
+                        }
+                        objArray[i].fallDown();//階梯上升
+                        if(objArray[i].getY() < 0){
+                              objArray.shift();
+                              step++;
+                              document.getElementById("record").innerHTML=step + " F";
+                        }
+                  };
+                  //cxt2.drawImage(imgMain,0,0,100,110,user.getX(),user.getY(),50,70);//畫人物
+                  if(imgIndex == 0)
+                        cxt2.drawImage(imgMain,20,0,20,40,user.getX(),user.getY(),20,40);//中間
+                  else if(imgIndex == 1)
+                        cxt2.drawImage(imgMain,140,81,20,40,user.getX(),user.getY(),20,40);//向右1
+                  else if(imgIndex == 2)
+                        cxt2.drawImage(imgMain,180,81,20,40,user.getX(),user.getY(),20,40);//向右2
+                  else if(imgIndex == 3)
+                        cxt2.drawImage(imgMain,240,40,20,40,user.getX(),user.getY(),20,40);//向左1
+                  else if(imgIndex == 4)
+                        cxt2.drawImage(imgMain,220,81,20,40,user.getX(),user.getY(),20,40);//向左2
+                  if(!user.fallFlag)
+                        user.fallDown();//人物掉落
+                  else
+                        user.onTheStep();
+                  if (objArray.length < 30 ) {
+                        randStep();//rand產生階梯
+                        if(speed > 5)//速度加快
+                              speed = speed - 5;
+                        window.clearInterval(move);
+                        move = window.setInterval(down,speed);
+                  };
+                  document.getElementById("debug").innerHTML=user.fallFlag;
+            }
+
+            
+            
+            function stop(){
+                  window.clearInterval(move);
+            }
+            
+            function randStep(){
+                  for(var i = 0 ; i < 30 ; i++ ){
+                        var temp = new object();
+                        temp.setY(objArray[objArray.length - 1].getY() + Math.floor(Math.random() * (10) + 50));
+                        temp.setX(Math.floor(Math.random() * (500)));
+                        objArray.push(temp);
+                  }
+            }
+            
+            
+            
+            
+            
+		</script>	
+	</body>
+</html>
