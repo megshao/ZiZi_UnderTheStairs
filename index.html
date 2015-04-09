@@ -23,7 +23,16 @@
 
             var imgMain=new Image();
             imgMain.src="http://i145.photobucket.com/albums/r212/stardustandsunshine/jill_01redgreenblue.png";
-
+            var imgGameOver = new Image();
+            imgGameOver.src = "http://playtech.si/imgs/uploads/g/a/game-over.png";
+            var imgStep = new Image();
+            //imgStep.src = "http://140.127.22.205/100-1/vr/BRICK.JPG";
+            imgStep.src = "https://0.s3.envato.com/files/55350153/01_Platforms.jpg";
+            var imgStep1 = new Image();
+            imgStep1.src = "http://thumbs.dreamstime.com/z/d-tileset-platform-game-tile-set-set-vector-asset-contains-ground-tiles-several-items-objects-decorations-used-50445797.jpg";
+            var imgBg = new Image();
+            imgBg.src = "https://raw.githubusercontent.com/mihaip/descent/master/Descent/paper.png";
+            //imgBg.src = "http://www.graphic-buffet.com/wp-content/uploads/2013/05/cute-platform-minipack-example-all.jpg";
 
             var step = 1;
 
@@ -54,7 +63,7 @@
                         rightIndex++;
                         //alert("你按下了<-");
                         if(user.step != null){
-                              if(user.getX()  < user.step.getX()){
+                              if(user.getX() +10  < user.step.getX()){
                                     user.fallFlag = false;
                                     user.resetStep();
                               }
@@ -90,10 +99,18 @@
             
             function down(){
                   cxt2.clearRect(0,0,600,600);
+                  //cxt2.drawImage(imgBg,500,700,100,100,0,0,600,600);
+                  cxt2.drawImage(imgBg,0,0,600,600);
                   for(var i = 0 ; i < objArray.length ; i++){
-                        cxt2.fillRect(objArray[i].getX(),objArray[i].getY(),100,20);//畫階梯
+                        //cxt2.fillRect(objArray[i].getX(),objArray[i].getY(),100,20);//畫階梯
+                        if(objArray[i].stepType == 0)
+                              cxt2.drawImage(imgStep,60,50,100,20,objArray[i].getX(),objArray[i].getY(),100,20);
+                              //cxt2.drawImage(imgStep,10,10,100,20,objArray[i].getX(),objArray[i].getY(),100,20);
+                        else
+                              cxt2.drawImage(imgStep1,480,550,130,100,objArray[i].getX(),objArray[i].getY(),100,20);
                         if(!user.fallFlag){
-                              if((user.getX() + 25 >= objArray[i].getX())&&(user.getX()  <= objArray[i].getX() + 100) &&((user.getY()+40 >= objArray[i].getY()-1) &&(user.getY()+40 <= objArray[i].getY()+1))){
+                              if((user.getX() + 25 >= objArray[i].getX())&&(user.getX()  <= objArray[i].getX() + 100) &&((user.getY()+40 >= objArray[i].getY()-3) &&(user.getY()+40 <= objArray[i].getY()+3))){
+                                    user.setY(objArray[i].getY()-40);
                                     user.fallFlag = true;
                                     user.setStep(objArray[i]);
                                     //alert("QQ"+user.fallFlag);
@@ -117,10 +134,16 @@
                         cxt2.drawImage(imgMain,240,40,20,40,user.getX(),user.getY(),20,40);//向左1
                   else if(imgIndex == 4)
                         cxt2.drawImage(imgMain,220,81,20,40,user.getX(),user.getY(),20,40);//向左2
-                  if(!user.fallFlag)
+                  if(!user.fallFlag){
                         user.fallDown();//人物掉落
-                  else
+                        if(user.getY() >= 600)
+                              gameOver();
+                  }
+                  else{
                         user.onTheStep();
+                        if(user.getY() + 20 <= 0)
+                              gameOver();
+                  }
                   if (objArray.length < 30 ) {
                         randStep();//rand產生階梯
                         if(speed > 5)//速度加快
@@ -142,11 +165,15 @@
                         var temp = new object();
                         temp.setY(objArray[objArray.length - 1].getY() + Math.floor(Math.random() * (10) + 50));
                         temp.setX(Math.floor(Math.random() * (500)));
+                        temp.setStepType(Math.floor(Math.random() *(2)));
                         objArray.push(temp);
                   }
             }
             
-            
+            function gameOver(){
+                  stop();
+                  cxt2.drawImage(imgGameOver,0,0,320,70,150,250,320,70);
+            }
             
             
             

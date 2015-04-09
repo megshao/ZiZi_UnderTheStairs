@@ -4,6 +4,7 @@ function object(){
 
 	this.x = x;
 	this.y = y;
+	this.stepType = 0;
 
 	this.setX = function(input){
 		this.x = input;
@@ -11,6 +12,10 @@ function object(){
 
 	this.setY = function(input){
 		this.y = input;
+	}
+
+	this.setStepType = function(input){
+		this.stepType = input;
 	}
 
 	this.getX = function(){

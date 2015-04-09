@@ -49,14 +49,20 @@ function people(){
 	}
 
 	this.fallDown = function(){
-		this.y++;
+		this.y+=3;
 	}
 
 	this.moveRight = function(){
-		this.x+=10;
+		if(this.x + 30 > 600)
+			this.x = 580;
+		else
+			this.x+=10;
 	}
 
 	this.moveLeft = function(){
-		this.x-=10;
+		if(this.x - 10 < 0)
+			this.x = 0;
+		else
+			this.x -= 10;
 	}
 }
