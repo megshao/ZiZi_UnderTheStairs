@@ -12,7 +12,6 @@
 	</head>
 
 	<body>
-            <!--<div align="center">-->
             <div class="" style="padding:50px;">
                   <div class="col-md-7">
 		            <div class="panel panel-default">
@@ -47,7 +46,7 @@
 		var cxt2=c2.getContext("2d");
             cxt2.lineWidth="10";
 
-            var imgMain=new Image();
+            var imgMain=new Image();//載入所有所需的圖片
             imgMain.src="img/people.png";
             var imgGameOver = new Image();
             imgGameOver.src = "img/game-over.png";
@@ -58,25 +57,25 @@
             var imgBg = new Image();
             imgBg.src = "img/paper.png";
 
-            var step = 0;
-            var gameOverFlag = false;
-            var objArray = new Array();
+            var step = 0;//記錄經過多少階樓梯
+            var gameOverFlag = false;//記錄是否game over
+            var objArray = new Array();//樓梯物件的array
 
-            var temp = new object();
+            var temp = new object();//建立初始的第一個樓梯
             temp.setX(250);
             temp.setY(200);
             objArray.push(temp);
             
-            var user = new people();
+            var user = new people();//初始化角色
             user.setX(300);
 
             var imgIndex = 0;//0:中 1:右1 2:右2 3:左1 4:左2
-            var rightIndex = 0;
-            var leftIndex = 0;
+            var rightIndex = 0;//記錄向右多少次，來達成動畫實現
+            var leftIndex = 0;//記錄向左
 
-            var speed = 30;
+            var speed = 30;//畫面更新速度
 
-            function init(){
+            function init(){//初始化
                   step = 0;
                   document.getElementById("record").innerHTML="0 F";
                   gameOverFlag = false;
@@ -98,20 +97,19 @@
                   changeBlood();
             }
 
-            document.captureEvents(Event.KEYDOWN);
+            document.captureEvents(Event.KEYDOWN);//capture鍵盤的事件
             document.onkeydown=function(event){//按鍵控制
                   if(event.which==37){
                   //key code 37為<-
-                        user.moveLeft();
-                        if(rightIndex % 2 ==0){
+                        user.moveLeft();//角色向左移動
+                        if(leftIndex % 2 ==0){
                               imgIndex = 3;
                         }
                         else{
                               imgIndex = 4;
                         }
-                        rightIndex++;
-                        //alert("你按下了<-");
-                        if(user.step != null){
+                        leftIndex++;
+                        if(user.step != null){//若角色在某個樓梯上，便要check移動後是否超出樓梯
                               if(user.getX() + 10  < user.step.getX() ){
                                     user.fallFlag = false;
                                     user.resetStep();
@@ -121,15 +119,14 @@
                   }
                   else if(event.which==39){
                   //key code 39為->
-                        user.moveRight();
-                        if(leftIndex % 2 == 0){
+                        user.moveRight();//角色向右移動
+                        if(rightIndex % 2 == 0){
                               imgIndex = 1;
                         }
                         else{
                               imgIndex = 2;
                         }
-                        leftIndex++;
-                        //alert("你按下了->");
+                        rightIndex++;
                         if(user.step != null){
                               if(user.getX()  > user.step.getX() + 100){
                                     user.fallFlag = false;
@@ -140,43 +137,41 @@
                   }
             }
             document.captureEvents(Event.KEYUP);
-            document.onkeyup = function(event){
+            document.onkeyup = function(event){//當左右鍵放開後，角色會變為站直的狀態
                   imgIndex = 0;
             }
 
             var move;
 
             function start(){
-                  if(gameOverFlag)
+                  if(gameOverFlag)//若重新開始，則進行初始化
                         init();
                   move = window.setInterval(down,speed);  
             }
 	      
             
             function down(){
-                  cxt2.clearRect(0,0,600,600);
+                  //cxt2.clearRect(0,0,600,600);
                   cxt2.drawImage(imgBg,0,0,600,600);
                   for(var i = 0 ; i < objArray.length ; i++){
-                        //cxt2.fillRect(objArray[i].getX(),objArray[i].getY(),100,20);//畫階梯
-                        if(objArray[i].stepType == 0)
+                        if(objArray[i].stepType == 0)//畫階梯，根據不同階梯類型判斷要畫哪種階梯
                               cxt2.drawImage(imgStep,60,50,100,20,objArray[i].getX(),objArray[i].getY(),100,20);
-                              //cxt2.drawImage(imgStep,10,10,100,20,objArray[i].getX(),objArray[i].getY(),100,20);
                         else
                               cxt2.drawImage(imgStep1,480,550,130,100,objArray[i].getX(),objArray[i].getY(),100,20);
-                        if(!user.fallFlag){
+                        if(!user.fallFlag){//判斷角色是否在樓梯上
                               if((user.getX() + 10 >= objArray[i].getX())&&(user.getX()  <= objArray[i].getX() + 100) &&((user.getY()+40 >= objArray[i].getY()-3) &&(user.getY()+40 <= objArray[i].getY()+3))){
                                     user.setY(objArray[i].getY()-40);
                                     user.fallFlag = true;
                                     user.setStep(objArray[i]);
-                                    if(user.bloodFlag){
+                                    if(user.bloodFlag){//判斷角色是否第一次踩到該樓梯
                                           if(objArray[i].stepType == 0){
-                                                user.recover();
-                                                changeBlood();
+                                                user.recover();//加血
+                                                changeBlood();//呼叫function更新血條畫面
                                                 user.bloodFlag = false;
                                           }
                                           else{
                                                 user.setY(user.getY()+10);
-                                                user.hurt();
+                                                user.hurt();//扣血
                                                 changeBlood();
                                                 user.bloodFlag = false;
                                           }
@@ -184,13 +179,12 @@
                               }
                         }
                         objArray[i].fallDown();//階梯上升
-                        if(objArray[i].getY() < 0){
+                        if(objArray[i].getY() < 0){//若樓梯超出畫面，便將該樓梯從array移除
                               objArray.shift();
                               step++;
                               document.getElementById("record").innerHTML=step + " F";
                         }
                   };
-                  //cxt2.drawImage(imgMain,0,0,100,110,user.getX(),user.getY(),50,70);//畫人物
                   if(imgIndex == 0)
                         cxt2.drawImage(imgMain,20,0,20,40,user.getX(),user.getY(),20,40);//中間
                   else if(imgIndex == 1)
