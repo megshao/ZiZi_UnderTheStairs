@@ -52,13 +52,11 @@
             var imgGameOver = new Image();
             imgGameOver.src = "img/game-over.png";
             var imgStep = new Image();
-            //imgStep.src = "http://140.127.22.205/100-1/vr/BRICK.JPG";
             imgStep.src = "img/step.jpg";
             var imgStep1 = new Image();
             imgStep1.src = "img/thorn.jpg";
             var imgBg = new Image();
             imgBg.src = "img/paper.png";
-            //imgBg.src = "http://www.graphic-buffet.com/wp-content/uploads/2013/05/cute-platform-minipack-example-all.jpg";
 
             var step = 0;
             var gameOverFlag = false;
@@ -180,6 +178,7 @@
                                                 user.bloodFlag = false;
                                           }
                                           else{
+                                                user.setY(user.getY()+10);
                                                 user.hurt();
                                                 changeBlood();
                                                 user.bloodFlag = false;
