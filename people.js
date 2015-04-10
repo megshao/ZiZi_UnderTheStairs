@@ -49,7 +49,7 @@ function people(){
 	}
 
 	this.fallDown = function(){
-		this.y+=3;
+		this.y+=1;
 	}
 
 	this.moveRight = function(){

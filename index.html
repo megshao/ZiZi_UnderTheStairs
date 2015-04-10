@@ -39,7 +39,8 @@
             var objArray = new Array();
 
             var temp = new object();
-            temp.setX(100);
+            temp.setX(250);
+            temp.setY(200);
             objArray.push(temp);
             
             var user = new people();
@@ -63,7 +64,7 @@
                         rightIndex++;
                         //alert("你按下了<-");
                         if(user.step != null){
-                              if(user.getX() +10  < user.step.getX()){
+                              if(user.getX()  < user.step.getX() ){
                                     user.fallFlag = false;
                                     user.resetStep();
                               }
