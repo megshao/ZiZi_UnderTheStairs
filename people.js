@@ -7,6 +7,8 @@ function people(){
 	this.y = y;
 	this.fallFlag = fallFlag;
 	this.step = null;
+	this.blood = 100;
+	this.bloodFlag = true;
 
 	this.setX = function(input){
 		this.x = input;
@@ -44,6 +46,10 @@ function people(){
 		return this.fallFlag;
 	}
 
+	this.getBlood = function(){
+		return this.blood;
+	}
+
 	this.onTheStep = function(){
 		this.y--;
 	}
@@ -65,4 +71,17 @@ function people(){
 		else
 			this.x -= 10;
 	}
+
+	this.hurt = function(){
+		if(this.blood > 30)
+			this.blood-=30;
+		else
+			this.blood = 0;
+	}
+
+	this.recover = function(){
+		if(this.blood < 100)
+			this.blood+=10;
+	}
+
 }
